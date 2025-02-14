@@ -36,6 +36,12 @@
 		component: './RandomUser',
 		icon: 'ArrowsAltOutlined',
 	},
+	{
+		path: '/todo-list',
+		name: 'TodoList',
+		component: './ToDoList/index',
+		icon: 'UnorderedListOutlined',
+	},
 
 	// DANH MUC HE THONG
 	// {
