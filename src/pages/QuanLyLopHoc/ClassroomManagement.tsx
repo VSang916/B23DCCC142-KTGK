@@ -31,7 +31,7 @@ const ClassroomManagement: React.FC = () => {
   const [roomTypeFilter, setRoomTypeFilter] = useState<string | null>(null);
   const [form] = Form.useForm();
 
-  const managers = ['Nguyễn Viết Sang', 'Trần Đức Định', 'Lưu Đức Tuấn'];
+  const managers = ['Nguyễn Viết Sang', 'Trần Đức Định', 'Lưu Đức Tuấn','Nguyễn Minh Đức'];
   const roomTypes = ['Lý thuyết', 'Thực hành', 'Hội trường'];
 
   useEffect(() => {

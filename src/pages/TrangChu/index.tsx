@@ -9,11 +9,12 @@ const TrangChu = () => {
 	return (
 		<Card bodyStyle={{ height: '100%' }}>
 			<div className='home-welcome'>
-				<div>
+				{/* <div>
 					<b>{data.length} users</b>
-				</div>
-				<h1 className='title'>THỰC HÀNH LẬP TRÌNH WEB</h1>
+				</div> */}
+				<h1 className='title'>THỰC HÀNH LẬP TRÌNH WEB - KTGK</h1>
 				<h2 className='sub-title'>{unitName.toUpperCase()}</h2>
+				<h3 className='sub-title'>Nguyễn Viết Sang - B23DCCC142</h3>
 			</div>
 		</Card>
 	);

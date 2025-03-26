@@ -37,7 +37,7 @@
 		icon: 'ArrowsAltOutlined',
 	},
 	{
-		path: '/QLLH',
+		path: '/QLPH',
 		name: 'Quản lý phòng học',
 		component: './QuanLyLopHoc/ClassroomManagement',
 		icon: 'BankOutlined',
