@@ -37,10 +37,10 @@
 		icon: 'ArrowsAltOutlined',
 	},
 	{
-		path: '/todo-list',
-		name: 'TodoList',
-		component: './ToDoList/index',
-		icon: 'UnorderedListOutlined',
+		path: '/QLLH',
+		name: 'Quản lý phòng học',
+		component: './QuanLyLopHoc/ClassroomManagement',
+		icon: 'BankOutlined',
 	},
 
 	// DANH MUC HE THONG

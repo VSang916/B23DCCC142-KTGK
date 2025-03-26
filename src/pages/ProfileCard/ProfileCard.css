@@ -1,0 +1,71 @@
+/* ProfileCard.css */
+.profile-card {
+    max-width: 800px;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .profile-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  
+  /* Desktop layout */
+  .profile-card-desktop {
+    display: flex;
+    align-items: center;
+  }
+  
+  .profile-card-desktop .profile-image {
+    margin: 20px;
+  }
+  
+  .profile-card-desktop .profile-content {
+    padding: 20px;
+    flex: 1;
+  }
+  
+  /* Mobile layout */
+  .profile-card-mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .profile-card-mobile .profile-image {
+    margin: 20px 0;
+  }
+  
+  .profile-card-mobile .profile-content {
+    padding: 0 20px 20px;
+  }
+  
+  .profile-name {
+    margin: 0 0 10px;
+    color: #333;
+    font-size: 24px;
+  }
+  
+  .profile-description {
+    margin: 0;
+    color: #666;
+    line-height: 1.5;
+  }
+  
+  /* Thêm media query bổ sung nếu cần */
+  @media (max-width: 768px) {
+    .profile-card {
+      margin: 10px;
+    }
+    
+    .profile-image {
+      width: 120px;
+      height: 120px;
+    }
+  }
