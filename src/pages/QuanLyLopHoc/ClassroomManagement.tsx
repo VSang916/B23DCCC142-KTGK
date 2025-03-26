@@ -9,25 +9,54 @@ import {
   Select, 
   message, 
   Space, 
-  Popconfirm 
+  Popconfirm,
+  Row,
+  Col,
+  TableProps
 } from 'antd';
 import { Classroom } from '../../models/Classroom';
 import { ClassroomService } from '../../services/ClassroomService';
+import { SearchOutlined } from '@ant-design/icons';
+import { SorterResult } from 'antd/es/table/interface';
 
 const { Column } = Table;
 const { Option } = Select;
 
 const ClassroomManagement: React.FC = () => {
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
+  const [filteredClassrooms, setFilteredClassrooms] = useState<Classroom[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentClassroom, setCurrentClassroom] = useState<Classroom | null>(null);
+  const [searchText, setSearchText] = useState('');
+  const [roomTypeFilter, setRoomTypeFilter] = useState<string | null>(null);
   const [form] = Form.useForm();
 
-  const managers = ['Trần Đức Định', 'Lưu Đức Tuấn', 'Nguyễn Viết Sang'];
+  const managers = ['Nguyễn Viết Sang', 'Trần Đức Định', 'Lưu Đức Tuấn'];
+  const roomTypes = ['Lý thuyết', 'Thực hành', 'Hội trường'];
 
   useEffect(() => {
-    setClassrooms(ClassroomService.getClassrooms());
+    const storedClassrooms = ClassroomService.getClassrooms();
+    setClassrooms(storedClassrooms);
+    setFilteredClassrooms(storedClassrooms);
   }, []);
+
+  useEffect(() => {
+    let result = [...classrooms];
+
+    if (searchText) {
+      const searchLower = searchText.toLowerCase();
+      result = result.filter(classroom => 
+        classroom.id.toLowerCase().includes(searchLower) || 
+        classroom.name.toLowerCase().includes(searchLower)
+      );
+    }
+
+    if (roomTypeFilter) {
+      result = result.filter(classroom => classroom.type === roomTypeFilter);
+    }
+
+    setFilteredClassrooms(result);
+  }, [searchText, roomTypeFilter, classrooms]);
 
   const handleAddEdit = () => {
     form.validateFields().then(values => {
@@ -47,7 +76,8 @@ const ClassroomManagement: React.FC = () => {
         ClassroomService.addClassroom(classroom);
       }
 
-      setClassrooms(ClassroomService.getClassrooms());
+      const updatedClassrooms = ClassroomService.getClassrooms();
+      setClassrooms(updatedClassrooms);
       setIsModalVisible(false);
       form.resetFields();
       setCurrentClassroom(null);
@@ -62,7 +92,8 @@ const ClassroomManagement: React.FC = () => {
     }
 
     ClassroomService.deleteClassroom(record.id);
-    setClassrooms(ClassroomService.getClassrooms());
+    const updatedClassrooms = ClassroomService.getClassrooms();
+    setClassrooms(updatedClassrooms);
     message.success('Xóa phòng học thành công');
   };
 
@@ -72,26 +103,84 @@ const ClassroomManagement: React.FC = () => {
     form.setFieldsValue(record);
   };
 
+  const handleTableChange: TableProps<Classroom>['onChange'] = (pagination, filters, sorter) => {
+    const sorterResult = Array.isArray(sorter) ? sorter[0] : sorter;
+
+    if (sorterResult.columnKey === 'capacity') {
+      const sortedClassrooms = [...filteredClassrooms].sort((a: Classroom, b: Classroom) => 
+        sorterResult.order === 'ascend' 
+          ? a.capacity - b.capacity 
+          : b.capacity - a.capacity
+      );
+      setFilteredClassrooms(sortedClassrooms);
+    }
+  };
+
   return (
     <div style={{ padding: 24 }}>
-      <Button 
-        type="primary" 
-        onClick={() => setIsModalVisible(true)}
-        style={{ marginBottom: 16 }}
-      >
-        Thêm Phòng Học
-      </Button>
+      <Row gutter={16} style={{ marginBottom: 16 }}>
+        <Col span={8}>
+          <Input 
+            placeholder="Tìm kiếm theo mã phòng hoặc tên phòng"
+            prefix={<SearchOutlined />}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+        </Col>
+        <Col span={8}>
+          <Select
+            style={{ width: '100%' }}
+            placeholder="Lọc theo loại phòng"
+            allowClear
+            onChange={(value) => setRoomTypeFilter(value)}
+          >
+            {roomTypes.map(type => (
+              <Option key={type} value={type}>{type}</Option>
+            ))}
+          </Select>
+        </Col>
+        <Col span={8}>
+          <Button 
+            type="primary" 
+            onClick={() => setIsModalVisible(true)}
+          >
+            Thêm Phòng Học
+          </Button>
+        </Col>
+      </Row>
 
       <Table 
-        dataSource={classrooms} 
+        dataSource={filteredClassrooms} 
         rowKey="id"
         pagination={{ pageSize: 10 }}
+        onChange={handleTableChange}
       >
-        <Column title="Mã Phòng" dataIndex="id" key="id" />
-        <Column title="Tên Phòng" dataIndex="name" key="name" />
-        <Column title="Số Chỗ Ngồi" dataIndex="capacity" key="capacity" />
-        <Column title="Loại Phòng" dataIndex="type" key="type" />
-        <Column title="Người Phụ Trách" dataIndex="manager" key="manager" />
+        <Column 
+          title="Mã Phòng" 
+          dataIndex="id" 
+          key="id" 
+        />
+        <Column 
+          title="Tên Phòng" 
+          dataIndex="name" 
+          key="name" 
+        />
+        <Column 
+          title="Số Chỗ Ngồi" 
+          dataIndex="capacity" 
+          key="capacity" 
+          sorter={(a: Classroom, b: Classroom) => a.capacity - b.capacity}
+        />
+        <Column 
+          title="Loại Phòng" 
+          dataIndex="type" 
+          key="type" 
+        />
+        <Column 
+          title="Người Phụ Trách" 
+          dataIndex="manager" 
+          key="manager" 
+        />
         <Column
           title="Thao Tác"
           key="actions"
@@ -153,9 +242,9 @@ const ClassroomManagement: React.FC = () => {
             rules={[{ required: true, message: 'Vui lòng chọn loại phòng' }]}
           >
             <Select>
-              <Option value="Lý thuyết">Lý thuyết</Option>
-              <Option value="Thực hành">Thực hành</Option>
-              <Option value="Hội trường">Hội trường</Option>
+              {roomTypes.map(type => (
+                <Option key={type} value={type}>{type}</Option>
+              ))}
             </Select>
           </Form.Item>
           <Form.Item 
